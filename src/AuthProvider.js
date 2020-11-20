@@ -1,67 +1,69 @@
 import React, { useState, useMemo } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+
 import { API, API_TUNNEL } from './config';
+import AuthStack from './AuthStack';
+import HomeTabs from './HomeTabs';
 
 export const AuthContext = React.createContext();
 
 const AuthProvider = ({ children }) => {
-    const auth = useMemo(() => ({
-        login: async (username, password) => {
-            
-            const endpoint = `${API_TUNNEL}/api/login`;
-            // const endpoint = 'http://localhost:8000/api/login';
-            // const endpoint = '/api/login';
+    const [user, setUser] = useState(null);
 
-            console.log('login', endpoint, username, password);
-
+    // const auth = useMemo(() => ({
+    const auth = {
+        user,
+        login: async (username, password) => {            
+            const login = `${API_TUNNEL}/api/login`;
             const axiosInstance = axios.create({
-                //timeout: 10000,
+                timeout: 30000, // 30s
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
                     'Access-Control-Allow-Origin': '*'
                 }
             });
-
-            try {
-                await axiosInstance.post(endpoint, {
-                    'username': username,
-                    'password': password
-                }).then(
-                    (response) => {console.log(response.data);}
-                ).catch(
-                    (error) => {console.log('e1', error);}
-                );
-            } catch (e) {
-                console.log('e2', e);
-            }
-
-            // axios.post(
-            //     endpoint, 
-            //     { 
-            //         username,
-            //         password
-            //     }
-            // )
-            // .then(response => {
-            //     console.log('success', response.data.data);
-            // })
-            // .catch(error => {
-            //     console.log('An error occured.', error);
-            // });
+            
+            await axiosInstance.post(login, {
+                'username': username,
+                'password': password
+            }).then((response) => {
+                setUser(response.data);
+                AsyncStorage.setItem('user', JSON.stringify(response.data));
+            }).catch((error) => {
+                console.log('e1', error);}
+            );
         },
-        logout: () =>  {
-            console.log('logout');
+        logout: async () =>  {            
+            const logout = `${API_TUNNEL}/api/logout`;
+            const axiosInstance = axios.create({
+                timeout: 30000, // 30s
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': `Bearer ${user.access_token}`
+                }
+            });
+            
+            await axiosInstance.get(logout).then((response) => {
+                if (response.status == 200) {
+                    setUser(null);
+                    AsyncStorage.removeItem('user');
+                }
+            }).catch((error) => {
+                console.log('e1', error);
+            });
         },
         register: (username, email, password) => {
             console.log('register', username, email, password);
         }
-    }), []);
+    //}), []);
+    };
 
     return (
         <AuthContext.Provider value={ auth }>
-            { children }
+            { user ? <HomeTabs /> : <AuthStack /> }
         </AuthContext.Provider>
     );
 };

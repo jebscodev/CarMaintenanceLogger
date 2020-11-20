@@ -6,6 +6,7 @@ import Branding from '../components/Branding';
 import Input from '../components/Input';
 import SolidButton from '../components/SolidButton';
 import TextButton from '../components/TextButton';
+import Loading from '../components/Loading';
 
 const Login = ({ navigation }) => {
     const bgImage = require('../../assets/background-login.jpg');
@@ -17,6 +18,8 @@ const Login = ({ navigation }) => {
 
     return (
         <ImageBackground source={ bgImage } style={ styles.backgroundImage }>
+        
+            {/* <Loading loading={ true } /> */}
 
             <Branding style={ styles.brandWrapper }/>
 

@@ -1,12 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import AuthProvider from './AuthProvider';
-import AuthConsumer from './AuthConsumer';
 
 const Main = () => {
     return (
-        <AuthProvider>
-            <AuthConsumer />
-        </AuthProvider>
+        <AuthProvider />
     );
 };
 

@@ -8,8 +8,12 @@ const Statistics = () => {
     return (
         <View style={styles.screen}>
             <Text>Statistics Page</Text>
-            <Text>Welcome { user.username }!</Text>
-            <Button title='Logout' onPress={ logout }/>
+            <Text>Welcome {user.name}!</Text>
+            <Button 
+                title='Logout' 
+                onPress={async ()=>{ 
+                    await logout(); 
+                }}/>
         </View>
     );
 };
