@@ -12,4 +12,4 @@ export const API = (typeof manifest.packagerOpts === `object`) && manifest.packa
 - ngrok.exe authtoken <token provided>
 - ngrok.exe http <port number>
 */
-  export const API_TUNNEL = 'http://8d1c9cab0b22.ngrok.io'; // forwards to http://localhost:8000
+  export const API_TUNNEL = 'http://9e9c979a6a89.ngrok.io'; // forwards to http://localhost:8000

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { withSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Loading = (props) => {
     if (!props.loading) {

@@ -8,7 +8,7 @@ import HomeTabs from './HomeTabs';
 
 export const AuthContext = React.createContext();
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = () => {
     const [user, setUser] = useState(null);
 
     // const auth = useMemo(() => ({
@@ -31,9 +31,10 @@ const AuthProvider = ({ children }) => {
             }).then((response) => {
                 setUser(response.data);
                 AsyncStorage.setItem('user', JSON.stringify(response.data));
-            }).catch((error) => {
-                console.log('e1', error);}
-            );
+            });
+            // .catch((error) => {
+            //     console.log('e1', error);}
+            // );
         },
         logout: async () =>  {            
             const logout = `${API_TUNNEL}/api/logout`;
@@ -54,9 +55,6 @@ const AuthProvider = ({ children }) => {
             }).catch((error) => {
                 console.log('e1', error);
             });
-        },
-        register: (username, email, password) => {
-            console.log('register', username, email, password);
         }
     //}), []);
     };

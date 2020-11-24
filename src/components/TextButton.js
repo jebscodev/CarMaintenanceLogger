@@ -12,9 +12,7 @@ const TextButton = (props) => {
 };
 
 const styles = StyleSheet.create({
-    text: {
-        color: '#fff',
-    }
+    text: {}
 });
 
 export default TextButton;

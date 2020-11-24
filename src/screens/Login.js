@@ -7,23 +7,39 @@ import Input from '../components/Input';
 import SolidButton from '../components/SolidButton';
 import TextButton from '../components/TextButton';
 import Loading from '../components/Loading';
+import Error from '../components/Error';
 
 const Login = ({ navigation }) => {
     const bgImage = require('../../assets/background-login.jpg');
 
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const { login } = useContext(AuthContext);
+
+    const executeLogin = async ()=>{ 
+        try {
+            setLoading(true);
+            await login(username, password); 
+        } catch (e) {
+            console.log('e2', e);
+            setError('Invalid Login.');
+            setLoading(false);
+        }
+    }
 
     return (
         <ImageBackground source={ bgImage } style={ styles.backgroundImage }>
         
-            {/* <Loading loading={ true } /> */}
+            <Loading loading={ loading } />
 
             <Branding style={ styles.brandWrapper }/>
 
             <View style={ styles.screen }>
+
+                <Error style={ styles.wrapper } text={ error } />
 
                 <Input 
                     style={ styles.wrapper }
@@ -41,13 +57,11 @@ const Login = ({ navigation }) => {
                 <SolidButton 
                     title='Log In' 
                     style={ styles.wrapper } 
-                    onPress={ async ()=>{ 
-                        await login(username, password); 
-                    }}/>
+                    onPress={ executeLogin }/>
 
                 <TextButton 
                     title='Sign Up' 
-                    style={ styles.wrapper } 
+                    style={ styles.textButton } 
                     onPress={()=>{
                         navigation.navigate('Register')
                     }}/>
@@ -74,6 +88,10 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         marginBottom: 20,
+    },
+    textButton: {
+        marginBottom: 20,
+        color: '#fff',
     },
 });
 

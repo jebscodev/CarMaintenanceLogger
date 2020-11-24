@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ImageBackground } from 'react-native';
-import { AuthContext } from '../AuthProvider';
 
 import Input from '../components/Input';
 import Header from '../components/Header';
 import SolidButton from '../components/SolidButton';
+import Error from '../components/Error';
 
 const Register = () => {
     const bgImage = require('../../assets/background-login.jpg');
@@ -13,12 +13,24 @@ const Register = () => {
     const [email, setEmail] = useState('alphalogic@gmail.com');
     const [password, setPassword] = useState('abc');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState(null);
 
-    const { register } = useContext(AuthContext);
+    const register = (username, email, password, confirmPassword) => {
+        console.log('register', username, email, password, confirmPassword);
+
+        if (password !== confirmPassword) {
+            console.log('Password mismatch.');
+            return;
+        }
+        
+        console.log('register-success', username, email, password);
+    };
 
     return (
         <ImageBackground source={ bgImage } style={ styles.backgroundImage }>
             <View style={ styles.screen }>
+
+                <Error style={ styles.wrapper } text={ error } />
 
                 <Header style={ styles.wrapper }  text='Sign Up as new user.'/>
 
@@ -49,9 +61,9 @@ const Register = () => {
                     
                 <SolidButton 
                     title='Register' 
-                    onPress={() => { 
-                        register(username, email, password);
-                     }} />
+                    onPress={ () => {
+                        register(username, email, password, confirmPassword);
+                    } } />
 
             </View>
         </ImageBackground>

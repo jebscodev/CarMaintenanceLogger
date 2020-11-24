@@ -1,30 +1,31 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button, TextInput, Modal } from 'react-native';
+import Input from '../components/Input';
+import SolidButton from '../components/SolidButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const NewEntry = () => {
-
-    // should be dynamic
-    let carMake = 'Suzuki';
-    let carModelYear = 'Swift 2016';
-    let carBodyType = 'Hatchback';
+    const [date, setDate] = useState(new Date());
 
     return (
         <View style={styles.screen}>
-            <View style={styles.details}>
-                <Text style={styles.label}>Car Make: {carMake}</Text>
-                <Text style={styles.label}>Model and Year: {carModelYear}</Text>
-                <Text style={styles.label}>Body Type: {carBodyType}</Text>
-            </View>
-
             <View style={styles.form}>
-                <Text style={styles.label}>Parts/Service:</Text>
-                <Text style={styles.label}>Job Done:</Text>
-                <Text style={styles.label}>Date:</Text>
-                <Text style={styles.label}>Cost:</Text>
-            </View>
+                <Input style={styles.wrapper} placeholder='Name of Parts' />
+                <Input style={styles.wrapper} placeholder='Last Serviced on' />
+                <Input style={styles.wrapper} placeholder='Service Time Elapsed' />
+                <Input style={styles.wrapper} placeholder='Total Cost' keyboardType='numeric' />
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={date}
+                    is24Hour={true}
+                    display="default"
+                    onChange={()=>{}} />
 
-            <View style={styles.button}>
-                <Button title='Add Entry' onPress={()=>{}} />
+                <SolidButton 
+                    title='ADD ENTRY' 
+                    style={styles.wrapper} 
+                    onPress={ ()=>{} } />
             </View>
         </View>
     );
@@ -35,15 +36,12 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 50,
     },
-    details: {
-        padding: 10,
-        borderRadius: 10,
-        elevation: 5,
-        backgroundColor: '#fff',
-        margin: 10,
+    wrapper: {
+        marginBottom: 20,
     },
     form: {
         padding: 10,
+        alignItems: 'center',
         borderRadius: 10,
         elevation: 5,
         backgroundColor: '#fff',
