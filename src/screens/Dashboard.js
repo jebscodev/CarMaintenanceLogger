@@ -1,11 +1,26 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { AuthContext } from '../AuthProvider';
 import TextButton from '../components/TextButton';
-import { PARTS } from '../config/data';
+import { SERVICED_PARTS } from '../config/data';
 
 const Dasboard = () => {
     const { user, logout } = useContext(AuthContext);
+    const [partsList, setPartsList] = useState([]);
+
+    const getParts = async () => {
+        const url = `${API_TUNNEL}/entries`;
+        const axiosInstance = axios.create({
+            timeout: 30000, // 30s
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Authorization': `Bearer ${user.access_token}`
+            }
+        });
+
+        await axiosInstance.get(url);
+    };
 
     // should be dynamic
     let carMake = 'Suzuki';
@@ -15,7 +30,7 @@ const Dasboard = () => {
     return (
         <View style={styles.screen}>
             <View style={styles.header}>
-                <Text>Hello {user.name}!</Text>
+                <Text>Hello {user.user.name}!</Text>
                 <TextButton 
                     style={styles.textButton}
                     title='LOGOUT' 
@@ -32,7 +47,7 @@ const Dasboard = () => {
                 </View>
 
                 <FlatList 
-                    data={PARTS}
+                    data={partsList}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => {
                         return (

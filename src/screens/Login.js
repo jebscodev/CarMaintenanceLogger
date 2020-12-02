@@ -12,7 +12,7 @@ import Error from '../components/Error';
 const Login = ({ navigation }) => {
     const bgImage = require('../../assets/background-login.jpg');
 
-    const [username, setUsername] = useState(null);
+    const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ const Login = ({ navigation }) => {
     const executeLogin = async ()=>{ 
         try {
             setLoading(true);
-            await login(username, password); 
+            await login(email, password); 
         } catch (e) {
             console.log('e2', e);
             setError('Invalid Login.');
@@ -43,9 +43,10 @@ const Login = ({ navigation }) => {
 
                 <Input 
                     style={ styles.wrapper }
-                    placeholder='Username' 
-                    value={ username }
-                    onChangeText={ setUsername } />
+                    placeholder='Email' 
+                    keyboardType='email-address'
+                    value={ email }
+                    onChangeText={ setEmail } />
 
                 <Input 
                     style={ styles.wrapper }

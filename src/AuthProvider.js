@@ -11,11 +11,10 @@ export const AuthContext = React.createContext();
 const AuthProvider = () => {
     const [user, setUser] = useState(null);
 
-    // const auth = useMemo(() => ({
     const auth = {
         user,
-        login: async (username, password) => {            
-            const login = `${API_TUNNEL}/api/login`;
+        login: async (email, password) => {
+            const login = `${API_TUNNEL}/login`;
             const axiosInstance = axios.create({
                 timeout: 30000, // 30s
                 headers: {
@@ -26,18 +25,15 @@ const AuthProvider = () => {
             });
             
             await axiosInstance.post(login, {
-                'username': username,
+                'email': email,
                 'password': password
             }).then((response) => {
                 setUser(response.data);
                 AsyncStorage.setItem('user', JSON.stringify(response.data));
             });
-            // .catch((error) => {
-            //     console.log('e1', error);}
-            // );
         },
-        logout: async () =>  {            
-            const logout = `${API_TUNNEL}/api/logout`;
+        logout: async () =>  {
+            const logout = `${API_TUNNEL}/logout`;
             const axiosInstance = axios.create({
                 timeout: 30000, // 30s
                 headers: {
@@ -55,8 +51,29 @@ const AuthProvider = () => {
             }).catch((error) => {
                 console.log('e1', error);
             });
+        },
+        register: async (name, email, password, confirmPassword) => {
+            const register = `${API_TUNNEL}/register`;
+            const axiosInstance = axios.create({
+                timeout: 30000, // 30s
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const payload = {
+                'name': name,
+                'email': email,
+                'password': password,
+                'password_confirmation': confirmPassword
+            };
+
+            await axiosInstance.post(register, payload)
+            .then((response) => {
+                setUser(response.data);
+                AsyncStorage.setItem('user', JSON.stringify(response.data));
+            });
         }
-    //}), []);
     };
 
     return (

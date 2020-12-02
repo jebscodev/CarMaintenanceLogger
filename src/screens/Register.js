@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, StyleSheet, ImageBackground } from 'react-native';
+import { AuthContext } from '../AuthProvider';
 
 import Input from '../components/Input';
 import Header from '../components/Header';
@@ -9,21 +10,20 @@ import Error from '../components/Error';
 const Register = () => {
     const bgImage = require('../../assets/background-login.jpg');
 
-    const [username, setUsername] = useState('');
+    const { register } = useContext(AuthContext);
+
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('alphalogic@gmail.com');
     const [password, setPassword] = useState('abc');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
 
-    const register = (username, email, password, confirmPassword) => {
-        console.log('register', username, email, password, confirmPassword);
-
-        if (password !== confirmPassword) {
-            console.log('Password mismatch.');
-            return;
+    const executeRegister = async () => {
+        try {
+            await register(name, email, password, confirmPassword);
+        } catch (e) {
+            setError('Failed to Register. Please check entry.');
         }
-        
-        console.log('register-success', username, email, password);
     };
 
     return (
@@ -36,10 +36,9 @@ const Register = () => {
 
                 <Input 
                     style={ styles.wrapper } 
-                    keyboardType='email-address'
-                    placeholder='Username' 
-                    value={ username } 
-                    onChangeText={ setUsername } />
+                    placeholder='Name' 
+                    value={ name } 
+                    onChangeText={ setName } />
                 <Input 
                     style={ styles.wrapper } 
                     keyboardType='email-address'
@@ -61,9 +60,7 @@ const Register = () => {
                     
                 <SolidButton 
                     title='Register' 
-                    onPress={ () => {
-                        register(username, email, password, confirmPassword);
-                    } } />
+                    onPress={executeRegister} />
 
             </View>
         </ImageBackground>
