@@ -2,15 +2,17 @@ import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { AuthContext } from '../AuthProvider';
+import { API_TUNNEL } from '../config/';
+import { PARTS } from '../config/data';
+import axios from 'axios';
+
 import Input from '../components/Input';
 import SolidButton from '../components/SolidButton';
 import DropDown from '../components/DropDown';
 import Error from '../components/Error';
 
-import { AuthContext } from '../AuthProvider';
-import { API_TUNNEL } from '../config/';
-import { PARTS } from '../config/data';
-import axios from 'axios';
+// TO DO: add loading while adding new entry
 
 const NewEntry = () => {
 
@@ -127,6 +129,7 @@ const NewEntry = () => {
                 <Text style={styles.label}>Service Time Elapsed (days):</Text>
                 <Input 
                     style={styles.wrapper} 
+                    editable={false}
                     value={elapsedTime} 
                     onChangeText={(elapsedTime) => {
                         setElapsedTime(elapsedTime);

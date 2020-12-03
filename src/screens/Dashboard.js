@@ -1,26 +1,47 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+
 import { AuthContext } from '../AuthProvider';
+import { API_TUNNEL } from '../config/index';
+import axios from 'axios';
+
 import TextButton from '../components/TextButton';
-import { SERVICED_PARTS } from '../config/data';
+import NoData from '../components/NoData';
 
 const Dasboard = () => {
     const { user, logout } = useContext(AuthContext);
     const [partsList, setPartsList] = useState([]);
+    const [showList, setShowList] = useState(true);
 
-    const getParts = async () => {
-        const url = `${API_TUNNEL}/entries`;
-        const axiosInstance = axios.create({
-            timeout: 30000, // 30s
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Authorization': `Bearer ${user.access_token}`
-            }
-        });
+    useEffect(() => {
+        const getParts = async () => {
+            const url = `${API_TUNNEL}/entries`;
+            const axiosInstance = axios.create({
+                timeout: 30000, // 30s
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': `Bearer ${user.access_token}`
+                }
+            });
+    
+            await axiosInstance.get(url)
+            .then((response) => {
+                // console.log(response); // <- NEEDS TO ADJUST TO new api
+                const list = response.data.data;
+                if (list.length < 1) {
+                    setShowList(false);
+                } else {
+                    setPartsList(list);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        };
 
-        await axiosInstance.get(url);
-    };
+        getParts();
+    });
 
     // should be dynamic
     let carMake = 'Suzuki';
@@ -46,25 +67,25 @@ const Dasboard = () => {
                     <Text style={styles.label}>Body Type: {carBodyType}</Text>
                 </View>
 
-                <FlatList 
+                { showList ? <FlatList 
                     data={partsList}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => {
                         return (
                             <TouchableOpacity style={styles.card} onPress={()=>{}}>
                                 <View style={styles.cardDetails}>
-                                    <Text style={styles.label}>Name of Parts: {item.partName}</Text>
-                                    <Text style={styles.label}>Last Serviced on: {item.lastServiceDate}</Text>
-                                    <Text style={styles.label}>Service Time Elapsed: {item.serviceTimeElapsed}</Text>
-                                    <Text style={styles.label}>Total Cost: {item.totalCost}</Text>
+                                    <Text style={styles.label}>Name of Parts: {item.entry.part}</Text>
+                                    <Text style={styles.label}>Last Serviced on: {item.entry.lastServiceDate}</Text>
+                                    <Text style={styles.label}>Service Time Elapsed: {item.entry.serviceTimeElapsed}</Text>
+                                    <Text style={styles.label}>Total Cost: {item.entry.totalCost}</Text>
                                 </View>
                                 <View style={styles.cardImage}>
-                                    <Image source={item.image} />
+                                    {/* <Image source={item.image} /> */}
                                 </View>
                             </TouchableOpacity>
                         );
                     }}
-                    contentContainerStyle={{ paddingBottom: 150 }} />
+                    contentContainerStyle={{ paddingBottom: 150 }} /> : <NoData text='No Data Available.' /> }
             </View>
         </View>
     );
