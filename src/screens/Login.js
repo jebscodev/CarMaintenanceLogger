@@ -17,17 +17,10 @@ const Login = ({ navigation }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const { login } = useContext(AuthContext);
+    const { login, loginError } = useContext(AuthContext);
 
-    const executeLogin = async ()=>{ 
-        try {
-            setLoading(true);
-            await login(email, password); 
-        } catch (e) {
-            console.log('e2', e);
-            setError('Invalid Login.');
-            setLoading(false);
-        }
+    const executeLogin = async ()=>{
+        await login(email, password); 
     }
 
     return (
@@ -39,7 +32,7 @@ const Login = ({ navigation }) => {
 
             <View style={ styles.screen }>
 
-                <Error style={ styles.wrapper } text={ error } />
+                { loginError ? <Error style={ styles.wrapper } text={ loginError } /> : <View></View> }
 
                 <Input 
                     style={ styles.wrapper }

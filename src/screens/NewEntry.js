@@ -14,7 +14,7 @@ import Error from '../components/Error';
 
 // TO DO: add loading while adding new entry
 
-const NewEntry = () => {
+const NewEntry = ({ navigation }) => {
 
     const { user } = useContext(AuthContext);
     const [date, setDate] = useState(new Date());
@@ -84,7 +84,14 @@ const NewEntry = () => {
             setElapsedTime('0');
             setPartName('select-part');
             setTotalCost('');
-            Alert.alert(response.data.message);
+
+            Alert.alert(
+                'Success',
+                response.data.message,
+                [{
+                    text: 'OK',
+                    onPress: () => { navigation.navigate('Dashboard') }
+                }]);
         })
         .catch((error) => {
             console.log(error);

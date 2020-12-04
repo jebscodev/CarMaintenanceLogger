@@ -10,9 +10,11 @@ export const AuthContext = React.createContext();
 
 const AuthProvider = () => {
     const [user, setUser] = useState(null);
+    const [loginError, setLoginError] = useState('');
 
     const auth = {
         user,
+        loginError,
         login: async (email, password) => {
             const login = `${API_TUNNEL}/login`;
             const axiosInstance = axios.create({
@@ -23,13 +25,20 @@ const AuthProvider = () => {
                     'Access-Control-Allow-Origin': '*'
                 }
             });
-            
-            await axiosInstance.post(login, {
+            const payload = {
                 'email': email,
                 'password': password
-            }).then((response) => {
+            };
+            
+            await axiosInstance.post(login, payload)
+            .then((response) => {
+                // status == 200 otherwise throws an error
                 setUser(response.data);
                 AsyncStorage.setItem('user', JSON.stringify(response.data));
+                setLoginError('');
+            })
+            .catch((error) => {
+                setLoginError('Login Failed.');
             });
         },
         logout: async () =>  {
@@ -43,13 +52,13 @@ const AuthProvider = () => {
                 }
             });
             
-            await axiosInstance.get(logout).then((response) => {
-                if (response.status == 200) {
-                    setUser(null);
-                    AsyncStorage.removeItem('user');
-                }
+            await axiosInstance.get(logout)
+            .then((response) => {
+                console.log(response.data);
+                setUser(null);
+                AsyncStorage.removeItem('user');
             }).catch((error) => {
-                console.log('e1', error);
+                console.log(error);
             });
         },
         register: async (name, email, password, confirmPassword) => {

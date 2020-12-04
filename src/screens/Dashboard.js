@@ -27,12 +27,14 @@ const Dasboard = () => {
     
             await axiosInstance.get(url)
             .then((response) => {
-                // console.log(response); // <- NEEDS TO ADJUST TO new api
-                const list = response.data.data;
-                if (list.length < 1) {
-                    setShowList(false);
-                } else {
-                    setPartsList(list);
+                switch (response.status) {
+                    case 200:
+                        setPartsList(response.data.data);
+                        break;
+                    case 204: // No Content
+                    // case 500: // Server Error
+                        setShowList(false);
+                        break;
                 }
             })
             .catch((error) => {
@@ -41,7 +43,12 @@ const Dasboard = () => {
         };
 
         getParts();
-    });
+    }, 
+    // pass an empty array as dependency
+    // so that useEffect is invoked only once
+    // []
+    // TODO: find a way such that useEffect is invoked only when needed
+    );
 
     // should be dynamic
     let carMake = 'Suzuki';
