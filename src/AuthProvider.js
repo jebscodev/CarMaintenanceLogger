@@ -11,10 +11,16 @@ export const AuthContext = React.createContext();
 const AuthProvider = () => {
     const [user, setUser] = useState(null);
     const [loginError, setLoginError] = useState('');
+    const [updateList, setUpdateList] = useState(0);
 
     const auth = {
         user,
         loginError,
+        updateList,
+        triggerListUpdate: () => {
+            const ctr = updateList + 1;
+            setUpdateList(ctr);
+        },
         login: async (email, password) => {
             const login = `${API_TUNNEL}/login`;
             const axiosInstance = axios.create({
@@ -56,6 +62,8 @@ const AuthProvider = () => {
             .then((response) => {
                 console.log(response.data);
                 setUser(null);
+                setLoginError('');
+                setUpdateList(0);
                 AsyncStorage.removeItem('user');
             }).catch((error) => {
                 console.log(error);

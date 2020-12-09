@@ -9,7 +9,7 @@ import TextButton from '../components/TextButton';
 import NoData from '../components/NoData';
 
 const Dasboard = () => {
-    const { user, logout } = useContext(AuthContext);
+    const { user, logout, updateList } = useContext(AuthContext);
     const [partsList, setPartsList] = useState([]);
     const [showList, setShowList] = useState(true);
 
@@ -30,9 +30,9 @@ const Dasboard = () => {
                 switch (response.status) {
                     case 200:
                         setPartsList(response.data.data);
+                        setShowList(true);
                         break;
                     case 204: // No Content
-                    // case 500: // Server Error
                         setShowList(false);
                         break;
                 }
@@ -44,10 +44,8 @@ const Dasboard = () => {
 
         getParts();
     }, 
-    // pass an empty array as dependency
-    // so that useEffect is invoked only once
-    // []
-    // TODO: find a way such that useEffect is invoked only when needed
+    // useEffect is only invoked when updateList changes
+    [updateList]
     );
 
     // should be dynamic

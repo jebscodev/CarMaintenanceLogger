@@ -16,7 +16,7 @@ import Error from '../components/Error';
 
 const NewEntry = ({ navigation }) => {
 
-    const { user } = useContext(AuthContext);
+    const { user, triggerListUpdate } = useContext(AuthContext);
     const [date, setDate] = useState(new Date());
     const [dateStr, setDateStr] = useState('');
     const [mode, setMode] = useState('date');
@@ -85,16 +85,37 @@ const NewEntry = ({ navigation }) => {
             setPartName('select-part');
             setTotalCost('');
 
-            Alert.alert(
-                'Success',
-                response.data.message,
-                [{
-                    text: 'OK',
-                    onPress: () => { navigation.navigate('Dashboard') }
-                }]);
+            switch (response.status) {
+                case 201:
+                    Alert.alert(
+                        'Success',
+                        response.data.message,
+                        [{
+                            text: 'OK',
+                            onPress: () => { 
+                                navigation.navigate('Dashboard');
+                            }
+                        }]
+                    );
+                    triggerListUpdate();
+                    break;
+                default:
+                    Alert.alert(
+                        'Error',
+                        'Failed to addd new entry.'
+                    );
+                    break;
+            }
         })
         .catch((error) => {
-            console.log(error);
+            // HTTP 500 error is caught here
+            Alert.alert(
+                'Error',
+                'Server Error. Please try again later.',
+                [{
+                    text: 'OK'
+                }]
+            );
         });
     };
   
