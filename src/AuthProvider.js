@@ -11,17 +11,23 @@ export const AuthContext = React.createContext();
 const AuthProvider = () => {
     const [user, setUser] = useState(null);
     const [loginError, setLoginError] = useState('');
+    const [loading, setLoading] = useState(false);
     const [updateList, setUpdateList] = useState(0);
 
     const auth = {
         user,
         loginError,
+        loading,
         updateList,
         triggerListUpdate: () => {
             const ctr = updateList + 1;
             setUpdateList(ctr);
         },
         login: async (email, password) => {
+            
+            setLoading(true);
+            setLoginError('');
+
             const login = `${API_TUNNEL}/login`;
             const axiosInstance = axios.create({
                 timeout: 30000, // 30s
@@ -41,13 +47,17 @@ const AuthProvider = () => {
                 // status == 200 otherwise throws an error
                 setUser(response.data);
                 AsyncStorage.setItem('user', JSON.stringify(response.data));
-                setLoginError('');
             })
             .catch((error) => {
                 setLoginError('Login Failed.');
+                setLoading(false);
             });
         },
         logout: async () =>  {
+
+            setLoading(false);
+            setLoginError('');
+
             const logout = `${API_TUNNEL}/logout`;
             const axiosInstance = axios.create({
                 timeout: 30000, // 30s
@@ -62,7 +72,6 @@ const AuthProvider = () => {
             .then((response) => {
                 console.log(response.data);
                 setUser(null);
-                setLoginError('');
                 setUpdateList(0);
                 AsyncStorage.removeItem('user');
             }).catch((error) => {

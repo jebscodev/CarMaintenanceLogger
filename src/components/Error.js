@@ -2,9 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Error = (props) => {
+    if (!props.error) {
+        return <View />;
+    }
+
     return (
         <View style={ styles.container }>
-            <Text style={{...styles.text, ...props.style}}>{ props.text }</Text>
+            <Text style={{...styles.text, ...props.style}}>{ props.error }</Text>
         </View>
     );
 };

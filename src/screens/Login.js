@@ -14,13 +14,11 @@ const Login = ({ navigation }) => {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
 
-    const { login, loginError } = useContext(AuthContext);
+    const { login, loginError, loading } = useContext(AuthContext);
 
-    const executeLogin = async ()=>{
-        await login(email, password); 
+    const executeLogin = async () => {
+        await login(email, password);
     }
 
     return (
@@ -28,11 +26,11 @@ const Login = ({ navigation }) => {
         
             <Loading loading={ loading } />
 
-            <Branding style={ styles.brandWrapper }/>
+            <Branding style={ styles.brandWrapper } />
 
             <View style={ styles.screen }>
 
-                { loginError ? <Error style={ styles.wrapper } text={ loginError } /> : <View></View> }
+                <Error style={ styles.wrapper } error={ loginError } />
 
                 <Input 
                     style={ styles.wrapper }

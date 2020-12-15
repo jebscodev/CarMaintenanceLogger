@@ -19,7 +19,10 @@ const DropDown = (props) => {
 const styles = StyleSheet.create({
     main: {backgroundColor: '#fff'},
     item: {justifyContent: 'flex-start'},
-    dropDown: {backgroundColor: '#fff'}
+    dropDown: {
+        backgroundColor: '#fff',
+        elevation: 8,
+    }
 });
 
 export default DropDown;
